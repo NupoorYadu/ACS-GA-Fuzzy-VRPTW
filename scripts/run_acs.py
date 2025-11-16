@@ -2,6 +2,7 @@ import json
 import argparse
 import os
 import sys
+import random
 # ensure project root is on sys.path so 'src' package can be imported when running from scripts/
 proj_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if proj_root not in sys.path:
@@ -39,16 +40,14 @@ def main():
         acs = ACS(inst, vehicle_capacity=args.capacity, q0=args.q0, candidate_k=args.candidate_k, q0_decay=args.q0_decay, q0_min=args.q0_min, use_two_opt=(not args.no_two_opt))
         import time
         start = time.time()
-        # apply seed to numpy as well for reproducibility if provided
-        if args.seed is not None:
-            try:
-                import numpy as _np
-                _np.random.seed(int(args.seed))
-            except Exception:
-                pass
-            seed_val = int(args.seed)
-        else:
-            seed_val = 0
+        # apply deterministic seed across random, numpy, and ACS
+        seed_val = int(args.seed) if args.seed is not None else 0
+        random.seed(seed_val)
+        try:
+            import numpy as _np
+            _np.random.seed(seed_val)
+        except Exception:
+            pass
         res = acs.run(num_ants=args.ants, iterations=args.iters, seed=seed_val)
         elapsed = time.time() - start
         best_cost = res['best_cost']
@@ -112,7 +111,8 @@ def main():
             'max_load': max_load,
             'avg_route_dist': round(avg_route_dist, 3),
             'route_loads': ';'.join(str(x) for x in route_loads),
-            'route_dists': ';'.join(f"{x:.2f}" for x in route_dists)
+            'route_dists': ';'.join(f"{x:.2f}" for x in route_dists),
+            'seed': seed_val
         }
 
     # batch mode: run across many parsed JSONs
@@ -134,7 +134,7 @@ def main():
         # write summary CSV
         summary_path = os.path.join(args.out_dir, 'summary.csv')
         with open(summary_path, 'w', newline='', encoding='utf-8') as cf:
-            fieldnames = ['instance', 'best_cost', 'n_customers', 'n_routes', 'time_s', 'out_json', 'out_png', 'total_load', 'avg_load', 'max_load', 'avg_route_dist', 'route_loads', 'route_dists']
+            fieldnames = ['instance', 'best_cost', 'n_customers', 'n_routes', 'time_s', 'out_json', 'out_png', 'total_load', 'avg_load', 'max_load', 'avg_route_dist', 'route_loads', 'route_dists', 'seed']
             w = csv.DictWriter(cf, fieldnames=fieldnames)
             w.writeheader()
             for row in rows:

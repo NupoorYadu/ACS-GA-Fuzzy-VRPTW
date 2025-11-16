@@ -48,6 +48,7 @@ def collect(repeat_dirs):
                 'n_customers': int(r.get('n_customers', 0)),
                 'out_json': r.get('out_json',''),
                 'out_png': r.get('out_png',''),
+                'seed': r.get('seed',''),
                 'total_load': r.get('total_load',''),
                 'avg_load': r.get('avg_load',''),
                 'max_load': r.get('max_load',''),
@@ -61,7 +62,7 @@ def collect(repeat_dirs):
 def aggregate_and_write(per_inst, outdir, write_target=None):
     os.makedirs(outdir, exist_ok=True)
     outcsv = os.path.join(outdir, 'summary.csv')
-    fieldnames = ['instance','best_cost','n_customers','n_routes','time_s','out_json','out_png','total_load','avg_load','max_load','avg_route_dist','route_loads','route_dists']
+    fieldnames = ['instance','best_cost','n_customers','n_routes','time_s','out_json','out_png','total_load','avg_load','max_load','avg_route_dist','route_loads','route_dists','seed']
     with open(outcsv, 'w', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -80,6 +81,7 @@ def aggregate_and_write(per_inst, outdir, write_target=None):
                 'time_s': statistics.mean(times) if times else float('nan'),
                 'out_json': rep.get('out_json',''),
                 'out_png': rep.get('out_png',''),
+                'seed': rep.get('seed',''),
                 'total_load': rep.get('total_load',''),
                 'avg_load': rep.get('avg_load',''),
                 'max_load': rep.get('max_load',''),
