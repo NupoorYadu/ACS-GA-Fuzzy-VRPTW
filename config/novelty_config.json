@@ -1,0 +1,12 @@
+{
+  "candidate_k_relative_thresh": 0.15,
+  "weights": {
+    "candidate_k_large": 1.0,
+    "q0_decay": 1.0,
+    "tau0_present": 0.8,
+    "pheromone_init_tau0": 0.8,
+    "fuzzy_present": 1.2,
+    "two_opt": 0.6,
+    "ga_tuned": 1.2
+  }
+}

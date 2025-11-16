@@ -1,0 +1,8 @@
+{
+  "depot": { "x": 50.0, "y": 50.0 },
+  "customers": [
+    { "x": 55.0, "y": 52.0, "demand": 10, "ready_time": 0, "due_time": 1000, "service_time": 0 },
+    { "x": 60.0, "y": 48.0, "demand": 20, "ready_time": 0, "due_time": 1000, "service_time": 0 },
+    { "x": 45.0, "y": 60.0, "demand": 15, "ready_time": 0, "due_time": 1000, "service_time": 0 }
+  ]
+}
